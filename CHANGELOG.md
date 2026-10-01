@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+- README: added why, what each skill produces, how it works (diagram), repository layout, status and badges.
+
 ## [0.1.0] - 2026-10-01
 
 First release.

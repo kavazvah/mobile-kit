@@ -1,8 +1,25 @@
 # mobile-kit
 
+[![ci](https://github.com/kavazvah/mobile-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/kavazvah/mobile-kit/actions/workflows/ci.yml)
+![version](https://img.shields.io/badge/version-0.1.0-blue)
+![license](https://img.shields.io/badge/license-MIT-green)
+
 A Claude Code plugin for React Native / Expo apps. It gives Claude device control, a multi-size device matrix (Android sizes, iPhones, font scale, dark mode, locales), a test strategy with scaffolding, design proposals scored by an independent critic, UI/UX audits with fixes, and motion tokens and rules. It also installs a curated set of third-party skills into your project, so every teammate gets the same setup.
 
 <!-- Screenshot of a device-matrix report: added by the maintainer. -->
+
+**Contents:** [Why](#why) · [Install](#install) · [What `init` does](#what-init-does) · [What you get](#what-you-get) · [Skills and modules](#skills-and-modules) · [How it works](#how-it-works) · [Daily usage](#daily-usage) · [Requirements](#requirements) · [FAQ](#faq) · [Repository layout](#repository-layout) · [Status](#status) · [Contributing](#contributing)
+
+## Why
+
+An AI agent writing mobile UI usually can't see what it built. It checks one phone size, in one language, and judges its own work. The result is screens that look fine on the developer's device but clip text at 360dp, break at large font sizes, or overflow in German.
+
+mobile-kit closes that loop:
+
+- **It looks at the app on real simulators and emulators**, across small and large phones, iPhones, 2× font scale, dark mode and every locale, with one command and a side-by-side report.
+- **Code is never judged by the agent that wrote it.** UI reviews and design scores come from separate read-only agents with fixed checklists and rubrics.
+- **It writes the conventions down**: spacing/type/motion tokens, a `Screen` wrapper that owns safe-area insets, test layers, and a task → skill table in your `CLAUDE.md`, so every session and every teammate works the same way.
+- **It reuses the best existing skills** (Expo, Callstack, Software Mansion, Vercel, and others) instead of rewriting them, and installs them into your project at pinned versions.
 
 ## Install
 
@@ -30,6 +47,19 @@ Run the three commands inside Claude Code in your app's repository. `init` asks 
 **Commit** `.claude/`, `skills-lock.json`, `.mobile-kit.json`, `qa/device-matrix.json` and `CLAUDE.md`. Teammates who clone the repo get the skills automatically. For each plugin external, each teammate runs `claude plugin install <plugin> --scope project` once (a committed setting enables a plugin but doesn't download it); `init` prints the exact commands.
 
 Re-running `init` is safe: it shows a diff and applies only what you confirm. `/mobile-kit:update` adds or removes modules (`--add design`, `--remove motion`) and refreshes installed skills; `/mobile-kit:doctor` checks the machine and the project.
+
+## What you get
+
+What each skill leaves in your project, so you can see and commit the results:
+
+| Ask for | Skill | You get |
+|---|---|---|
+| "Does it fit on small phones / in German / at large font?" | `device-matrix-qa` | `qa-shots/<run>/index.html`: a contact sheet, one row per screen and one column per profile (and locale), plus `manifest.json` and an `.audit.json` per Android shot (touch targets under 48dp, content wider than the screen) |
+| "Run it on the emulator, open this link, show the logs" | `device-control` | The app built, installed and opened; screenshots, screen recordings (`.mp4` / `.mov`) and recent log lines |
+| "Add tests for…" | `mobile-testing` | A Jest preset, an example component test, `.maestro/smoke.yaml`, `test` / `test:e2e` npm scripts, and CI workflow templates |
+| "Review this screen / UX audit" | `ui-ux-review` | `qa/reviews/<date>-<scope>.md` with one line per finding, `[P1\|P2\|P3] screen / profile: problem → fix (file:line)`, then fixes in batches with re-checks |
+| "Give me three options for…" | `design-proposals` | Variants in `src/design-lab/<feature>/`, screenshots of each on several devices, a scored comparison, and `design/decisions/<date>-<feature>.md` |
+| "Make this animate smoothly" | `mobile-motion` | `motion.ts` tokens + `useMotion()`, code that follows the motion rules, and recordings of the result |
 
 ## Skills and modules
 
@@ -62,6 +92,25 @@ mobile-kit's own skills always ship with the plugin. A module that is off only m
 | haptics | off | `pulsar-haptics` | [software-mansion-labs/skills](https://github.com/software-mansion-labs/skills) | MIT |
 
 The full, verified list with purposes is in [`external-skills.json`](external-skills.json). Thanks to the authors of these skills: Expo, Vercel, Callstack, Software Mansion, Emil Kowalski, Ruben Glez (RubenGlez), Rasty Turek (ehmo) and andreev-danila.
+
+## How it works
+
+```mermaid
+flowchart LR
+  U[You ask in plain language] --> C[Claude Code]
+  C -->|CLAUDE.md routing table| S[mobile-kit skills]
+  S -->|delegate API details| X[third-party skills<br/>Expo, Callstack, Software Mansion, ...]
+  S --> SC[kit scripts<br/>Node, zero dependencies]
+  SC --> D[adb / emulator / xcrun simctl<br/>agent-device, Maestro]
+  D --> SH[screenshots, audits,<br/>recordings, logs]
+  SH --> A[independent agents<br/>ui-reviewer, design-critic]
+  A --> R[findings and scores<br/>in your repo]
+```
+
+- **Skills** are Markdown instructions Claude loads when your request matches them. They say what to do, in which order, and which script to run.
+- **Scripts** (`scripts/`, Node ≥ 18, no dependencies) do the deterministic work: detect the project, install externals, write config, drive devices, scan code. Each has `--help`, most have `--dry-run` and `--json`.
+- **Agents** (`agents/`) only have read access (`Read`, `Glob`, `Grep`). They see the screenshots and the code, and return findings or scores in a fixed format.
+- **One Android emulator becomes many phones**: profiles change the emulator's size and density at runtime (`adb shell wm size` / `wm density`), plus font scale, dark mode and navigation mode, and everything is reset afterwards. iOS uses one simulator per device, created as `QA <name>`.
 
 ## Daily usage
 
@@ -100,6 +149,28 @@ Expo SDK 52 or newer is supported. Run `/mobile-kit:doctor` to check a machine.
 **How do I update?** Update the plugin with `claude plugin update mobile-kit@kavazvah-mobile` (or `/plugin`), then run `/mobile-kit:update` in each project. It refreshes the third-party skills and re-renders the `CLAUDE.md` section for the new kit version.
 
 **Does the Design Lab ship to users?** No. It renders only in dev builds, or in builds made with `EXPO_PUBLIC_DESIGN_LAB=1` for iOS matrix runs. Never set that variable for a store build.
+
+## Repository layout
+
+```
+.claude-plugin/        plugin.json and marketplace.json
+skills/                one folder per skill (SKILL.md + references/ + assets/ + scripts/)
+agents/                ui-reviewer.md, design-critic.md (read-only)
+scripts/               detect, install-externals, scaffold, doctor, device, design-lab, scan-hardcoded
+scripts/lib/           shared helpers, including devices.mjs (the adb/simctl backend)
+shared/                layout rules, review checklist, CLAUDE.md section, tokens/Screen/motion templates
+external-skills.json   verified list of third-party skills per module
+evals/                 skill-triggering eval cases for `claude plugin eval`
+test/                  node:test suite, fixture projects, fake adb/xcrun
+docs/SPEC.md           the full specification
+```
+
+## Status
+
+Version **0.1.0**, the first release.
+
+- Verified on a fresh Expo SDK 57 app (macOS, Android API 36 emulator, iOS simulators): `init` end to end, the device matrix with locales, Jest + RNTL 14, a Maestro smoke flow on a release build, the Design Lab in Expo Go, and screen recordings. All 19 skill-triggering evals pass.
+- Not yet tried on a real production project, and not yet checked: the Design Lab in an iOS release build, and the review agents on a real audit. Reports and pull requests are very welcome.
 
 ## Contributing
 
