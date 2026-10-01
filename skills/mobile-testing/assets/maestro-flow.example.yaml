@@ -1,0 +1,16 @@
+# Smoke flow: the app starts and its first screen renders.
+# Run against a release (or EAS "e2e-test") build that is installed on the device:
+#   maestro test -e APP_ID=<android package | iOS bundle id> .maestro/
+# The start screen's root view needs testID="{{startTestId}}" (convention: <screen>.<element>).
+appId: ${APP_ID}
+name: Smoke
+tags:
+  - smoke
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "{{startTestId}}"
+    timeout: 20000
+- takeScreenshot: smoke-start

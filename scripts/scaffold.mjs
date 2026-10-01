@@ -9,6 +9,7 @@ import {
 } from './lib/fs.mjs';
 import { log, printJson, setJsonMode, die } from './lib/log.mjs';
 import { DEFAULT_MODULES, resolveModules, routingRows } from './lib/modules.mjs';
+import { planTesting } from './lib/testing-scaffold.mjs';
 import { detect } from './detect.mjs';
 
 const HELP = `
@@ -22,6 +23,9 @@ Actions (ids):
   gitignore       adds qa-shots/ to .gitignore
   claude-md       the mobile-kit section in CLAUDE.md, between ${MARK_START} / ${MARK_END}
   theme           tokens.ts + Screen.tsx, only with --theme (ask the user first)
+  package-json    Jest preset + npm scripts test / test:e2e (only with --testing; adds, never replaces)
+  test-example    an example component test in __tests__/ (only with --testing)
+  maestro-smoke   .maestro/smoke.yaml (only with --testing)
   lock            ${LOCK_FILE}
 
 Options:
@@ -31,6 +35,7 @@ Options:
   --only <ids>            Apply only these actions
   --overwrite <ids>       Allow replacing existing files for these actions (e.g. matrix-config)
   --theme                 Include the theme templates
+  --testing               Include the test scaffold (mobile-testing skill)
   --android-package <id>  Override the detected Android package
   --ios-bundle-id <id>    Override the detected iOS bundle id
   --scheme <scheme>       Override the detected URL scheme
@@ -97,7 +102,7 @@ function themeTargets(det) {
   return { themeDir, tokens: `${themeDir}/tokens.ts`, screen: `${componentsDir}/Screen.tsx`, tokensImport: rel };
 }
 
-export function planScaffold({ cwd, modules, det, overrides = {}, theme = false, overwrite = [] }) {
+export function planScaffold({ cwd, modules, det, overrides = {}, theme = false, testing = false, overwrite = [] }) {
   const mods = resolveModules(modules);
   const lock = readLock(cwd);
   const actions = [];
@@ -126,6 +131,17 @@ export function planScaffold({ cwd, modules, det, overrides = {}, theme = false,
     todo.push(det.themeDir
       ? `${det.themeDir} has no spacing tokens. Offer the token templates (re-run with --theme).`
       : 'No theme/tokens found. Offer the token templates (re-run with --theme).');
+  }
+
+  if (testing) {
+    const cfg = readJson(path.join(cwd, lock.configPath || MATRIX_PATH))?.app ?? {};
+    const ids = {
+      android: overrides.androidPackage || cfg.androidPackage || det.appIds.android,
+      ios: overrides.iosBundleId || cfg.iosBundleId || det.appIds.ios,
+    };
+    const t = planTesting(cwd, det, ids);
+    for (const f of t.files) actions.push(fileAction(f.id, f.path, cwd, f.content, { mergeable: f.id === 'package-json', overwrite: overwrite.includes(f.id) }));
+    todo.push(...t.todo);
   }
 
   // Lock: keep installed externals, record modules/paths.
@@ -166,7 +182,7 @@ function report(p, dryRun) {
 
 export function main(argv) {
   const args = parseArgs(argv, {
-    boolean: ['dry-run', 'json', 'theme', 'expo-cli', 'help'],
+    boolean: ['dry-run', 'json', 'theme', 'testing', 'expo-cli', 'help'],
     string: ['modules', 'cwd', 'only', 'overwrite', 'android-package', 'ios-bundle-id', 'scheme'],
     alias: { h: 'help' },
   });
@@ -182,6 +198,7 @@ export function main(argv) {
       det,
       modules: args.modules ? list(args.modules) : readLock(cwd).modules?.length ? readLock(cwd).modules : DEFAULT_MODULES,
       theme: args.theme,
+      testing: args.testing,
       overwrite: list(args.overwrite),
       overrides: { androidPackage: args['android-package'], iosBundleId: args['ios-bundle-id'], scheme: args.scheme },
     });

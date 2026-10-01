@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `device-control` skill with `references/backends.md` (Desktop iOS Simulator pane, agent-device, raw fallback).
 - `device-matrix-qa`: locales (`none`, `deeplink-param`, `android-app-locale`), `--locales` filter, `--json` for `capture` and `shoot`, optional `android.applySettleMs`.
 - Fake `adb` / `xcrun` executables in `test/shims/` and tests for devices, device.mjs and the matrix.
+- `mobile-testing` skill with `references/{strategy,maestro,ci}.md` and `assets/{maestro-flow.example.yaml,component.test.example.tsx}`.
+- `scaffold.mjs --testing`: Jest preset, npm scripts `test` / `test:e2e` (/ `test:e2e:ios`), an example component test matching the installed RNTL major, and `.maestro/smoke.yaml` (`scripts/lib/testing-scaffold.mjs`).
 - `external-skills.json`: verified manifest of 12 third-party externals (Phase 1). Changes from the seed:
   - `vercel-rn`: skill is `vercel-react-native-skills`.
   - `platform-design`: skills are `ios-design-guidelines` and `android-design-guidelines`.
