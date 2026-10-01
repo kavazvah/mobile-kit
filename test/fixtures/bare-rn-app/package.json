@@ -1,0 +1,6 @@
+{
+  "name": "bare-rn-app",
+  "private": true,
+  "dependencies": { "react-native": "0.81.4", "react-native-reanimated": "4.1.1" },
+  "devDependencies": { "jest": "^29.7.0" }
+}

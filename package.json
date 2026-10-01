@@ -1,0 +1,11 @@
+{
+  "name": "mobile-kit",
+  "private": true,
+  "description": "Development package for the mobile-kit Claude Code plugin (no runtime dependencies).",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "validate": "claude plugin validate . --strict && claude plugin validate .claude-plugin/plugin.json --strict"
+  }
+}

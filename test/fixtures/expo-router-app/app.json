@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "Fixture",
+    "slug": "fixture",
+    "scheme": "fixture",
+    "android": { "package": "com.example.fixture" },
+    "ios": { "bundleIdentifier": "com.example.fixture" }
+  }
+}

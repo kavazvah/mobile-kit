@@ -1,0 +1,17 @@
+{
+  "name": "expo-router-app",
+  "private": true,
+  "dependencies": {
+    "expo": "~54.0.10",
+    "expo-router": "~6.0.8",
+    "expo-localization": "~17.0.7",
+    "i18next": "^25.5.2",
+    "react-i18next": "^15.7.3",
+    "react-native": "0.81.4",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-reanimated": "~4.1.1"
+  },
+  "devDependencies": {
+    "jest-expo": "~54.0.12"
+  }
+}

@@ -1,0 +1,6 @@
+		buildSettings = {
+			PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BareAppTests";
+		};
+		buildSettings = {
+			PRODUCT_BUNDLE_IDENTIFIER = com.example.bare.ios;
+		};

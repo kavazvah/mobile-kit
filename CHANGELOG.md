@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `device-matrix-qa` skill, moved from the seed. Script paths now use `${CLAUDE_PLUGIN_ROOT}`.
 - Shared references `shared/layout-rules.md` and `shared/checklist.md` (moved from the seed skill).
 - Maintainer instructions live in `.claude/CLAUDE.md`: a `CLAUDE.md` at the plugin root fails `claude plugin validate --strict`, because the plugin root is the repo root.
+- Core scripts (Node ≥ 18, zero dependencies): `scripts/detect.mjs`, `install-externals.mjs` (with `--dry-run`, `--refresh`, `--remove`), `scaffold.mjs`, `doctor.mjs`, and `scripts/lib/` (`args`, `exec`, `fs`, `log`, `modules`).
+- User-invoked skills `init`, `doctor` and `update`.
+- `shared/claude-md-section.md` and the `tokens.ts` / `Screen.tsx` templates.
+- Unit tests (`npm test`) with fixtures `test/fixtures/expo-router-app` and `bare-rn-app`.
 - `external-skills.json`: verified manifest of 12 third-party externals (Phase 1). Changes from the seed:
   - `vercel-rn`: skill is `vercel-react-native-skills`.
   - `platform-design`: skills are `ios-design-guidelines` and `android-design-guidelines`.
