@@ -46,6 +46,7 @@ The shared library behind `device.mjs` and device-matrix-qa:
 | `openUrl(platform, target, url, appId)` | `am start -W -a VIEW -d <url> <pkg>` | `simctl openurl` |
 | `screenshot(platform, target, file)` | `adb exec-out screencap -p` | `simctl io <udid> screenshot` |
 | `logs(platform, target, {appId, level, lines})` | `logcat -d -t <n> --pid=<pid> *:<L>` | `simctl spawn <udid> log show --last 5m --predicate 'process == "<exe>"'` |
+| `record(platform, target, file, {seconds})` | `screenrecord --time-limit <s>` + `adb pull` | `simctl io <udid> recordVideo --codec=h264`, stopped with SIGINT |
 | `setAppLocale(serial, pkg, tag)` | `cmd locale set-app-locales <pkg> --locales <tag>` (Android 13+; no tag resets) | |
 
 `ensureSim` creates simulators named `QA <name>`, so they never collide with the user's own devices.

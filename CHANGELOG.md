@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `ui-ux-review` skill (audit / fix / quick) with `references/{ux-heuristics,states,a11y,copy}.md`, and the read-only `ui-reviewer` agent.
 - `design-proposals` skill with `references/{rubric,design-lab}.md`, `assets/{DesignLab.template.tsx,DesignLabHost.template.tsx,Variant.template.tsx,decision.template.md}` (the host draws the lab as an overlay, so it works under tab navigators), the read-only `design-critic` agent, and `scripts/design-lab.mjs` (scaffold, new, register, config).
 - `doctor`: disk space check (warns below 10 GB free; native builds need about that much).
+- `mobile-motion` skill with `references/{motion-rules,review}.md`, a delegation table (Software Mansion, Emil Kowalski, Skia performance, `expo:expo-animation`), and `shared/templates/motion.ts` (duration/spring tokens + `useMotion()`, type-checked against Reanimated 4.7). `scaffold.mjs --motion` writes it (action `motion-tokens`).
+- `device.mjs record` / `devices.record()`: screen recordings on Android (`screenrecord`) and iOS (`simctl io recordVideo`).
 - `external-skills.json`: verified manifest of 12 third-party externals (Phase 1). Changes from the seed:
   - `vercel-rn`: skill is `vercel-react-native-skills`.
   - `platform-design`: skills are `ios-design-guidelines` and `android-design-guidelines`.

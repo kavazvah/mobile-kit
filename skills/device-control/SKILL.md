@@ -22,6 +22,7 @@ One consistent way to get the app onto a simulator/emulator and observe it.
    node $D launch <appId> [--platform ios]
    node $D open "<scheme>://<path>" --app <appId>   # deep link
    node $D screenshot shot.png [--platform ios]
+   node $D record clip.mp4 --seconds 8             # screen recording (iOS: use .mov)
    node $D logs --app <appId> [--level error] [--lines 100] [--platform ios]
    ```
 

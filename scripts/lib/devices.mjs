@@ -263,3 +263,34 @@ export function logs(platform, target, { appId, level = 'info', lines = 100, sin
   args.push(`*:${LOGCAT_LEVEL[level] ?? 'I'}`);
   return sh('adb', args).trimEnd();
 }
+
+/**
+ * Record the screen for `seconds` into `file` (.mp4 on Android, .mov/.mp4 on iOS, H.264).
+ * Android: screenrecord on the device (max 180 s), then pull. iOS: simctl recordVideo, stopped with SIGINT.
+ */
+export async function record(platform, target, file, { seconds = 10 } = {}) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  if (platform !== 'ios') {
+    const remote = '/sdcard/mk-record.mp4';
+    adb(target, 'shell', 'screenrecord', '--time-limit', String(Math.min(Math.max(1, Math.round(seconds)), 180)), remote);
+    adb(target, 'pull', remote, file);
+    trySh('adb', ['-s', target, 'shell', 'rm', '-f', remote]);
+    return file;
+  }
+  const child = spawn('xcrun', ['simctl', 'io', target, 'recordVideo', '--codec=h264', '--force', file], { stdio: ['ignore', 'ignore', 'pipe'] });
+  let stderr = '';
+  const exited = new Promise((resolve) => child.on('exit', (code) => resolve(code)));
+  const started = new Promise((resolve) => {
+    child.stderr.on('data', (d) => { stderr += d; if (stderr.includes('Recording started')) resolve(true); });
+    setTimeout(() => resolve(false), 10000);
+  });
+  if (!(await Promise.race([started, exited.then(() => false)]))) {
+    child.kill('SIGINT');
+    throw Object.assign(new Error(`Recording did not start on ${target}`), { stderr });
+  }
+  await sleep(seconds * 1000);
+  child.kill('SIGINT');
+  const code = await exited;
+  if (code !== 0 && code !== null) throw Object.assign(new Error(`recordVideo exited with ${code}`), { stderr });
+  return file;
+}

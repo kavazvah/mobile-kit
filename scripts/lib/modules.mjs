@@ -50,7 +50,7 @@ export function routingRows(modules, ext = new Set()) {
   if (has('ui-ux')) rows.push(['Review or fix UI/UX of existing screens', '`mobile-kit:ui-ux-review`' + (ext.has('platform-design') ? ' (platform rules: `ios-design-guidelines`, `android-design-guidelines`)' : '')]);
   if (has('design')) rows.push(['Two or three design options for a screen', '`mobile-kit:design-proposals`' + (ext.has('rubenglez-mobile-design') ? ' (process: `mobile-design`)' : '')]);
   if (has('motion')) {
-    const extra = [ext.has('emil-animate-expo') && '`animate-expo`', ext.has('swm-rn-best-practices') && '`react-native-best-practices`'].filter(Boolean);
+    const extra = [ext.has('emil-animate-expo') && '`animate-expo`', ext.has('swm-rn-best-practices') && '`react-native-best-practices`', ext.has('expo-official') && '`expo:expo-animation`'].filter(Boolean);
     rows.push(['Animations, gestures, transitions', '`mobile-kit:mobile-motion`' + (extra.length ? `, then ${extra.join(', ')}` : '')]);
   }
   if (has('perf') && ext.has('callstack-rn-best-practices')) rows.push(['Profiling and performance fixes', '`building-react-native-apps:react-native-best-practices`']);

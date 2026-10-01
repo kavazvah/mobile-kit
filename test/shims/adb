@@ -20,6 +20,7 @@ case "$*" in
   "shell pidof -s "*) echo 4242 ;;
   "logcat "*) echo "10-01 12:00:00.000  4242  4242 I ReactNativeJS: hello" ;;
   "emu avd name") printf 'Pixel_9\nOK\n' ;;
+  "pull "*) printf 'MP4-FAKE' > "$3" ;;
   "shell getprop sys.boot_completed") echo 1 ;;
   *) : ;;
 esac

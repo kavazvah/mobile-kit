@@ -15,7 +15,14 @@ case "$1 $2 $3" in
   *)
     case "$1" in
       create) echo "UDID-$(printf '%s' "$2" | tr -c 'A-Za-z0-9' '-')" ;;
-      io) [ "$3" = "screenshot" ] && printf 'PNG-FAKE' > "$4" ;;
+      io)
+        if [ "$3" = "screenshot" ]; then printf 'PNG-FAKE' > "$4"; fi
+        if [ "$3" = "recordVideo" ]; then
+          for last; do :; done
+          trap 'printf "MOV-FAKE" > "$last"; exit 0' INT
+          echo "Recording started" >&2
+          while :; do sleep 0.1; done
+        fi ;;
       appinfo) printf '{\n    CFBundleExecutable = MyApp;\n}\n' ;;
       spawn) printf 'line1 MyApp\nline2 MyApp\n' ;;
       *) : ;;

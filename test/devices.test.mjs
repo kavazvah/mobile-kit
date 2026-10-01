@@ -129,3 +129,20 @@ test('device.mjs reports a missing adb cleanly', skipWin, () => {
   assert.equal(r.code, 1);
   assert.match(r.stderr, /adb not found/);
 });
+
+test('record: Android screenrecord + pull, iOS recordVideo stopped with SIGINT', skipWin, () => {
+  const state = tmpDir('mk-state-');
+  const env = { PATH: `${SHIMS}${path.delimiter}${process.env.PATH}`, MK_SHIM_STATE: state };
+  const a = runScript('device.mjs', ['record', path.join(state, 'a.mp4'), '--seconds', '2', '--json'], { env });
+  assert.equal(a.code, 0, a.stderr);
+  assert.equal(fs.readFileSync(path.join(state, 'a.mp4'), 'utf8'), 'MP4-FAKE');
+  const i = runScript('device.mjs', ['record', path.join(state, 'i.mov'), '--seconds', '1', '--platform', 'ios', '--json'], { env });
+  assert.equal(i.code, 0, i.stderr);
+  assert.deepEqual(i.json, { platform: 'ios', target: 'UDID-BOOTED', file: path.join(state, 'i.mov'), seconds: 1 });
+  assert.equal(fs.readFileSync(path.join(state, 'i.mov'), 'utf8'), 'MOV-FAKE');
+  const calls = fs.readFileSync(path.join(state, 'calls.log'), 'utf8');
+  assert.match(calls, /adb -s emulator-5554 shell screenrecord --time-limit 2 \/sdcard\/mk-record\.mp4/);
+  assert.match(calls, /adb -s emulator-5554 shell rm -f \/sdcard\/mk-record\.mp4/);
+  assert.match(calls, /xcrun simctl io UDID-BOOTED recordVideo --codec=h264 --force /);
+  assert.equal(runScript('device.mjs', ['record', 'x.mp4', '--seconds', '0'], { env }).code, 1);
+});

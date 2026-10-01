@@ -26,6 +26,7 @@ Actions (ids):
   package-json    Jest preset + npm scripts test / test:e2e (only with --testing; adds, never replaces)
   test-example    an example component test in __tests__/ (only with --testing)
   maestro-smoke   .maestro/smoke.yaml (only with --testing)
+  motion-tokens   <theme dir>/motion.ts: duration/spring tokens + useMotion() (only with --motion)
   lock            ${LOCK_FILE}
 
 Options:
@@ -36,6 +37,7 @@ Options:
   --overwrite <ids>       Allow replacing existing files for these actions (e.g. matrix-config)
   --theme                 Include the theme templates
   --testing               Include the test scaffold (mobile-testing skill)
+  --motion                Include the motion tokens (mobile-motion skill)
   --android-package <id>  Override the detected Android package
   --ios-bundle-id <id>    Override the detected iOS bundle id
   --scheme <scheme>       Override the detected URL scheme
@@ -102,7 +104,7 @@ function themeTargets(det) {
   return { themeDir, tokens: `${themeDir}/tokens.ts`, screen: `${componentsDir}/Screen.tsx`, tokensImport: rel };
 }
 
-export function planScaffold({ cwd, modules, det, overrides = {}, theme = false, testing = false, overwrite = [] }) {
+export function planScaffold({ cwd, modules, det, overrides = {}, theme = false, testing = false, motion = false, overwrite = [] }) {
   const mods = resolveModules(modules);
   const lock = readLock(cwd);
   const actions = [];
@@ -144,6 +146,14 @@ export function planScaffold({ cwd, modules, det, overrides = {}, theme = false,
     todo.push(...t.todo);
   }
 
+  if (motion) {
+    const dir = themeDir || det.themeDir || (det.srcDir ? 'src/theme' : 'theme');
+    themeDir = themeDir || dir;
+    actions.push(fileAction('motion-tokens', `${dir}/motion.ts`, cwd, readText(path.join(KIT_ROOT, 'shared', 'templates', 'motion.ts')), { overwrite: overwrite.includes('motion-tokens') }));
+    if (!det.reanimated) todo.push(`motion.ts needs Reanimated: ${det.isExpo ? 'npx expo install react-native-reanimated react-native-worklets' : 'install react-native-reanimated and react-native-worklets'}`);
+    else if ((Number(String(det.reanimated).split('.')[0]) || 0) < 4) todo.push(`Reanimated ${det.reanimated} is older than 4: check useReducedMotion / ReduceMotion in motion.ts against its docs.`);
+  }
+
   // Lock: keep installed externals, record modules/paths.
   const nextLock = {
     kitVersion: kitVersion(),
@@ -182,7 +192,7 @@ function report(p, dryRun) {
 
 export function main(argv) {
   const args = parseArgs(argv, {
-    boolean: ['dry-run', 'json', 'theme', 'testing', 'expo-cli', 'help'],
+    boolean: ['dry-run', 'json', 'theme', 'testing', 'motion', 'expo-cli', 'help'],
     string: ['modules', 'cwd', 'only', 'overwrite', 'android-package', 'ios-bundle-id', 'scheme'],
     alias: { h: 'help' },
   });
@@ -199,6 +209,7 @@ export function main(argv) {
       modules: args.modules ? list(args.modules) : readLock(cwd).modules?.length ? readLock(cwd).modules : DEFAULT_MODULES,
       theme: args.theme,
       testing: args.testing,
+      motion: args.motion,
       overwrite: list(args.overwrite),
       overrides: { androidPackage: args['android-package'], iosBundleId: args['ios-bundle-id'], scheme: args.scheme },
     });

@@ -18,6 +18,8 @@ Commands:
   stop <appId>                 Force-stop / terminate an app
   open <url> [--app <appId>]   Open a deep link (Android: --app pins the intent to the app)
   screenshot <file.png>        Save a screenshot
+  record <file.mp4|file.mov> [--seconds 10]   (iOS writes QuickTime: use .mov)
+                               Record the screen (H.264). Android max 180 s. Use a release build to judge motion
   logs [--app <appId>] [--level verbose|debug|info|warn|error] [--lines 100] [--since 5m]
                                Recent log lines (snapshot). Android: filtered by the app's pid.
                                iOS: "log show" for the app's executable.
@@ -45,7 +47,7 @@ function target(args) {
 async function main() {
   const args = parseArgs(process.argv.slice(2), {
     boolean: ['json', 'headless', 'help'],
-    string: ['platform', 'target', 'app', 'level', 'lines', 'since'],
+    string: ['platform', 'target', 'app', 'level', 'lines', 'since', 'seconds'],
     alias: { h: 'help' },
   });
   handleHelp(args, HELP);
@@ -107,6 +109,16 @@ async function main() {
       const file = path.resolve(arg);
       dev.screenshot(args.platform, t, file);
       return out({ platform: args.platform, target: t, file }, file);
+    }
+    case 'record': {
+      if (!arg) die('record needs an output file, e.g. motion.mp4');
+      const seconds = Number(args.seconds ?? 10);
+      if (!(seconds > 0)) die('--seconds must be a positive number');
+      const t = target(args);
+      const file = path.resolve(arg);
+      if (!args.json) log.step(`Recording ${seconds}s on ${t}…`);
+      await dev.record(args.platform, t, file, { seconds });
+      return out({ platform: args.platform, target: t, file, seconds }, file);
     }
     case 'logs': {
       const t = target(args);
