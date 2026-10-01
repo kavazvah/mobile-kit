@@ -1,0 +1,51 @@
+{
+  "app": {
+    "androidPackage": "com.example.app",
+    "iosBundleId": "com.example.app",
+    "scheme": "myapp"
+  },
+  "screens": [
+    { "name": "home", "path": "" },
+    { "name": "settings", "path": "settings" },
+    { "name": "profile", "path": "profile" }
+  ],
+  "settleMs": 2500,
+  "android": {
+    "relaunch": false,
+    "defaultNav": "gestural",
+    "profiles": [
+      { "name": "small-360",    "width": 720,  "height": 1520, "dpi": 320, "note": "Budget/compact phones, the most common source of breakage" },
+      { "name": "short-360",    "width": 720,  "height": 1280, "dpi": 320, "note": "Short 16:9 screen, tests vertical fit and the keyboard" },
+      { "name": "standard-411", "width": 1080, "height": 2400, "dpi": 420, "note": "Pixel / most mid-range phones" },
+      { "name": "large-448",    "width": 1344, "height": 2992, "dpi": 480, "note": "Large flagships (Pro/Ultra)" },
+      { "name": "fold-inner",   "width": 2208, "height": 1840, "dpi": 420, "optional": true, "note": "Unfolded foldable, ~841dp wide" },
+      { "name": "tablet-800",   "width": 1600, "height": 2560, "dpi": 320, "optional": true, "note": "10\" tablet" }
+    ],
+    "stress": {
+      "profile": "small-360",
+      "variants": [
+        { "name": "font-130", "fontScale": 1.3 },
+        { "name": "font-200", "fontScale": 2.0 },
+        { "name": "dark", "dark": true },
+        { "name": "3button", "nav": "threebutton" }
+      ]
+    }
+  },
+  "ios": {
+    "appPath": "",
+    "devices": [
+      { "name": "se",      "match": ["iPhone SE (3rd generation)"], "note": "375pt, no notch, the smallest current iPhone" },
+      { "name": "base",    "match": ["iPhone 17", "iPhone 16"] },
+      { "name": "max",     "match": ["iPhone 17 Pro Max", "iPhone 16 Pro Max"] },
+      { "name": "ipad",    "match": ["iPad (A16)", "iPad Air 11-inch (M3)", "iPad Air 11-inch (M2)"], "optional": true }
+    ],
+    "stress": {
+      "device": "se",
+      "variants": [
+        { "name": "xxxl", "contentSize": "extra-extra-extra-large" },
+        { "name": "a11y-large", "contentSize": "accessibility-large" },
+        { "name": "dark", "dark": true }
+      ]
+    }
+  }
+}

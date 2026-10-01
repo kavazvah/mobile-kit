@@ -1,0 +1,117 @@
+{
+  "$comment": "UNVERIFIED candidates collected from research on 2026-10-01. Phase 1 must verify every source, skill/plugin name and license before writing external-skills.json.",
+  "externals": [
+    {
+      "id": "expo-official",
+      "module": "core",
+      "type": "plugin",
+      "plugin": "expo@claude-plugins-official",
+      "marketplace": null,
+      "purpose": "Official Expo skills (expo-native-ui, deployment, upgrades, etc.)",
+      "sourceUrl": "https://docs.expo.dev/skills/"
+    },
+    {
+      "id": "vercel-rn",
+      "module": "core",
+      "type": "skills-cli",
+      "source": "vercel-labs/agent-skills",
+      "skills": ["react-native-skills"],
+      "purpose": "React Native performance rules (lists, animations on GPU properties, state)",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills",
+      "note": "Skill name may be 'vercel-react-native-skills'; confirm with --list."
+    },
+    {
+      "id": "agent-device",
+      "module": "devices",
+      "type": "skills-cli",
+      "source": "callstack/agent-device",
+      "skills": ["agent-device", "dogfood"],
+      "purpose": "Device automation CLI for agents (snapshots, press/fill, screenshots, React DevTools)",
+      "sourceUrl": "https://docs.expo.dev/agents/agent-device/",
+      "note": "Also needs the CLI: npm i -g agent-device@latest (doctor checks it). A 'react-devtools' skill may also exist."
+    },
+    {
+      "id": "callstack-github-actions",
+      "module": "testing",
+      "type": "plugin",
+      "plugin": "github-actions@callstack-agent-skills",
+      "marketplace": "callstackincubator/agent-skills",
+      "purpose": "CI workflows producing simulator/emulator build artifacts",
+      "sourceUrl": "https://github.com/callstackincubator/agent-skills"
+    },
+    {
+      "id": "callstack-rn-testing",
+      "module": "testing",
+      "type": "unknown",
+      "purpose": "React Native Testing Library guidance",
+      "sourceUrl": "https://github.com/callstackincubator/agent-skills",
+      "note": "Mentioned in Callstack's 'Testing React Native Apps' bundle but not found in the skills/ list; locate the real source or drop it."
+    },
+    {
+      "id": "platform-design",
+      "module": "ui-ux",
+      "type": "skills-cli",
+      "source": "ehmo/platform-design-skills",
+      "skills": ["ios", "android"],
+      "purpose": "Apple HIG + Material Design 3 + WCAG rules",
+      "sourceUrl": "https://github.com/ehmo/platform-design-skills",
+      "note": "Generic skill names 'ios'/'android' may collide; check names and consider installing under a namespace if the CLI supports it."
+    },
+    {
+      "id": "rubenglez-mobile-design",
+      "module": "design",
+      "type": "skills-cli",
+      "source": "RubenGlez/mobile-design",
+      "skills": ["mobile-design"],
+      "purpose": "Mobile product design process for React Native/Expo (navigation, forms, typography, touch, safe areas)",
+      "sourceUrl": "https://github.com/rubenglez/mobile-design",
+      "note": "SKILL.md is at the repo root, so the CLI copies the whole repo; acceptable."
+    },
+    {
+      "id": "swm-rn-best-practices",
+      "module": "motion",
+      "type": "skills-cli",
+      "source": "software-mansion-labs/skills",
+      "skills": ["react-native-best-practices"],
+      "purpose": "Reanimated 4, Gesture Handler, Skia, layout animations, worklets (by the library authors)",
+      "sourceUrl": "https://github.com/software-mansion-labs/skills",
+      "note": "Same folder name as Callstack's skill; see SPEC §6.4. Alternative: plugin 'skills@swmansion' (brings ~10 unrelated skills)."
+    },
+    {
+      "id": "emil-animate-expo",
+      "module": "motion",
+      "type": "skills-cli",
+      "source": "emilkowalski/skills",
+      "skills": ["animate-expo"],
+      "purpose": "When/how to animate on mobile: UI thread, gestures, interruptibility, release-build judgement",
+      "sourceUrl": "https://www.ui-skills.com/skills/emilkowalski/animate-expo"
+    },
+    {
+      "id": "callstack-rn-best-practices",
+      "module": "perf",
+      "type": "plugin",
+      "plugin": "react-native-best-practices@callstack-agent-skills",
+      "marketplace": "callstackincubator/agent-skills",
+      "purpose": "Performance optimization + profiling (Ultimate Guide to RN Optimization)",
+      "sourceUrl": "https://github.com/callstackincubator/agent-skills"
+    },
+    {
+      "id": "reanimated-skia-performance",
+      "module": "motion-skia",
+      "type": "skills-cli",
+      "source": "andreev-danila/skills",
+      "skills": ["reanimated-skia-performance"],
+      "purpose": "Reanimated + Skia performance (UI-thread state, minimal JS↔UI crossings)",
+      "sourceUrl": "https://www.skills.sh/andreev-danila/skills/reanimated-skia-performance"
+    },
+    {
+      "id": "swm-pulsar-haptics",
+      "module": "haptics",
+      "type": "skills-cli",
+      "source": "software-mansion-labs/skills",
+      "skills": ["pulsar-haptics"],
+      "purpose": "Haptics with Software Mansion's Pulsar SDK",
+      "sourceUrl": "https://github.com/software-mansion-labs/skills"
+    }
+  ]
+}

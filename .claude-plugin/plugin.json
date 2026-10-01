@@ -1,0 +1,11 @@
+{
+  "name": "mobile-kit",
+  "displayName": "Mobile Kit (React Native / Expo)",
+  "version": "0.1.0",
+  "description": "Device control, multi-size device matrix, testing, design proposals, UI/UX review and motion for React Native / Expo, plus on-demand install of curated third-party skills.",
+  "author": { "name": "Vahid Kavazovic", "url": "https://github.com/kavazvah" },
+  "homepage": "https://github.com/kavazvah/mobile-kit",
+  "repository": "https://github.com/kavazvah/mobile-kit",
+  "license": "MIT",
+  "keywords": ["react-native", "expo", "mobile", "emulator", "simulator", "qa", "design", "animation"]
+}

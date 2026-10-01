@@ -1,0 +1,12 @@
+{
+  "name": "vahid-mobile",
+  "description": "Mobile development plugins for Claude Code",
+  "owner": { "name": "Vahid Kavazovic" },
+  "plugins": [
+    {
+      "name": "mobile-kit",
+      "source": "./",
+      "description": "Mobile dev kit for React Native / Expo"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+*.log
+qa-shots/
+coverage/
+.tmp/
+.claude/settings.local.json
