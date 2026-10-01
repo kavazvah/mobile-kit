@@ -1,5 +1,7 @@
 // Example component test (React Native Testing Library {{rntlMajor}}).
 // Queries by role/label/text first; testID only as a last resort.
+// Jest globals are imported explicitly so the file type-checks even when tsconfig doesn't load @types/jest (TypeScript 6).
+import { expect, jest, test } from '@jest/globals';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { render, screen, userEvent } from '@testing-library/react-native';

@@ -20,6 +20,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Fake `adb` / `xcrun` executables in `test/shims/` and tests for devices, device.mjs and the matrix.
 - `mobile-testing` skill with `references/{strategy,maestro,ci}.md` and `assets/{maestro-flow.example.yaml,component.test.example.tsx}`.
 - `scaffold.mjs --testing`: Jest preset, npm scripts `test` / `test:e2e` (/ `test:e2e:ios`), an example component test matching the installed RNTL major, and `.maestro/smoke.yaml` (`scripts/lib/testing-scaffold.mjs`).
+- `scripts/scan-hardcoded.mjs`: heuristic scan for raw spacing / radius / font-size numbers in styles and raw colour literals, with token suggestions, `--json`, `--max`, `// mk-ignore`, `// mk-ignore-next-line` and `// mk-ignore-file`.
+- `ui-ux-review` skill (audit / fix / quick) with `references/{ux-heuristics,states,a11y,copy}.md`, and the read-only `ui-reviewer` agent.
+- `design-proposals` skill with `references/{rubric,design-lab}.md`, `assets/{DesignLab.template.tsx,DesignLabHost.template.tsx,Variant.template.tsx,decision.template.md}` (the host draws the lab as an overlay, so it works under tab navigators), the read-only `design-critic` agent, and `scripts/design-lab.mjs` (scaffold, new, register, config).
+- `doctor`: disk space check (warns below 10 GB free; native builds need about that much).
 - `external-skills.json`: verified manifest of 12 third-party externals (Phase 1). Changes from the seed:
   - `vercel-rn`: skill is `vercel-react-native-skills`.
   - `platform-design`: skills are `ios-design-guidelines` and `android-design-guidelines`.
@@ -31,4 +35,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - `reanimated-skia-performance`: source has no license; kept with a `licenseWarning`.
 
 ### Changed
+- The example component test imports `expect`, `jest` and `test` from `@jest/globals`, so it type-checks under TypeScript 6 (whose `types` default no longer loads `@types/jest`). `@types/jest` is no longer suggested.
 - `matrix.mjs` now uses `scripts/lib/devices.mjs`. CLI and behaviour are unchanged: on the same config, the old and new script issue identical adb/simctl calls and produce identical output, manifest and report.

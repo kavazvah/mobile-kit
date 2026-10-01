@@ -59,7 +59,7 @@ export function planTesting(cwd, det, ids) {
   files.push({ id: 'package-json', path: 'package.json', content: JSON.stringify(next, null, indent) + (raw.endsWith('\n') ? '\n' : '') });
 
   // Dev dependencies
-  const needed = ['jest', '@testing-library/react-native', ...(det.isExpo ? ['jest-expo'] : []), ...(exists(path.join(cwd, 'tsconfig.json')) ? ['@types/jest'] : [])];
+  const needed = ['jest', '@testing-library/react-native', ...(det.isExpo ? ['jest-expo'] : [])];
   const missing = needed.filter((d) => !deps[d]);
   const cmd = installCommand(det, missing);
   if (cmd) todo.push(`Install test dependencies: ${cmd}`);

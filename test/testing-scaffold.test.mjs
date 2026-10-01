@@ -76,7 +76,7 @@ test('RNTL major: installed version, declared range, or inferred from React', ()
   assert.equal(rntlMajor(cwd, { devDependencies: { '@testing-library/react-native': '^13.3.0' } }), 14);
 });
 
-test('RNTL 13 project gets a sync render; TypeScript project gets .tsx and @types/jest', () => {
+test('RNTL 13 project gets a sync render; TypeScript project gets .tsx; globals come from @jest/globals', () => {
   const cwd = fixtureCopy('expo-router-app');
   editPkg(cwd, (p) => ({ ...p, dependencies: { ...p.dependencies, react: '18.3.1' } }));
   fs.writeFileSync(path.join(cwd, 'tsconfig.json'), '{}');
@@ -84,7 +84,8 @@ test('RNTL 13 project gets a sync render; TypeScript project gets .tsx and @type
   const example = fs.readFileSync(path.join(cwd, 'src/__tests__/example.test.tsx'), 'utf8');
   assert.match(example, /\n {2}render\(<Counter \/>\)/);
   assert.doesNotMatch(example, /await render/);
-  assert.match(p.todo.join('\n'), /@types\/jest/);
+  assert.match(example, /import \{ expect, jest, test \} from '@jest\/globals';/);
+  assert.doesNotMatch(p.todo.join('\n'), /@types\/jest/);
 });
 
 test('bare RN: react-native preset, package-manager install command, 4-space indent kept', () => {

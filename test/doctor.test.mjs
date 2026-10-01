@@ -97,3 +97,12 @@ test('validateMatrixConfig: locale param and app-locale settle warning', () => {
   delete cfg.locales.param;
   assert.deepEqual(validateMatrixConfig(cfg), { errors: [], warnings: [] });
 });
+
+test('disk space check reports free GB and warns below the threshold', async () => {
+  const { diskCheck } = await import('../scripts/doctor.mjs');
+  const ok = diskCheck(ROOT, 0);
+  if (!ok) return; // fs.statfsSync unavailable on this Node
+  assert.equal(ok.status, 'ok');
+  assert.match(ok.detail, /GB free/);
+  assert.equal(diskCheck(ROOT, 1e9).status, 'warn');
+});

@@ -69,6 +69,19 @@ export function validateMatrixConfig(cfg) {
   return { errors, warnings };
 }
 
+/** Native builds (Gradle, Pods, node_modules intermediates) need several GB; warn early. */
+export function diskCheck(dir, minGb = 10) {
+  if (typeof fs.statfsSync !== 'function') return null;
+  try {
+    const st = fs.statfsSync(dir);
+    const freeGb = (st.bavail * st.bsize) / 1024 ** 3;
+    const detail = `${freeGb.toFixed(1)} GB free`;
+    return freeGb < minGb
+      ? { name: 'disk space', status: 'warn', detail: `${detail}; a native Android/iOS build needs about ${minGb} GB`, fix: 'Free space (e.g. old builds: android/app/build, ios/build, ~/Library/Developer/Xcode/DerivedData)' }
+      : { name: 'disk space', status: 'ok', detail };
+  } catch { return null; }
+}
+
 function toolCheck(bin, { name = bin, level, fix, versionArgs, env } = {}) {
   const p = which(bin, env);
   if (!p) return { name, status: level, detail: 'not found', fix };
@@ -93,6 +106,8 @@ export function doctor(cwd, { env = process.env, platform = process.platform } =
   const nodeMajor = Number(process.versions.node.split('.')[0]);
   add(nodeMajor >= 18 ? { name: 'node', status: 'ok', detail: process.versions.node } : { name: 'node', status: 'error', detail: process.versions.node, fix: 'Install Node.js 18 or newer (https://nodejs.org)' });
   add(toolCheck('git', { level: 'error', fix: 'Install git (https://git-scm.com)', env }));
+  const disk = diskCheck(cwd);
+  if (disk) add(disk);
 
   if (has('devices') || has('matrix')) {
     const sdk = env.ANDROID_HOME || env.ANDROID_SDK_ROOT;
