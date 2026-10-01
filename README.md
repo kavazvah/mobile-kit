@@ -8,7 +8,7 @@ A Claude Code plugin for React Native / Expo projects: device control, a multi-s
 
 ```
 /plugin marketplace add kavazvah/mobile-kit
-/plugin install mobile-kit@vahid-mobile
+/plugin install mobile-kit@kavazvah-mobile
 /mobile-kit:init
 ```
 
