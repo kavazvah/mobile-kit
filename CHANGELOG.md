@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-01
+
+First release.
+
 ### Added
 - Plugin skeleton: `plugin.json`, `marketplace.json` (plugin at the repo root, `source: "./"`), and the folder layout.
 - `device-matrix-qa` skill, moved from the seed. Script paths now use `${CLAUDE_PLUGIN_ROOT}`.
@@ -26,6 +30,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `doctor`: disk space check (warns below 10 GB free; native builds need about that much).
 - `mobile-motion` skill with `references/{motion-rules,review}.md`, a delegation table (Software Mansion, Emil Kowalski, Skia performance, `expo:expo-animation`), and `shared/templates/motion.ts` (duration/spring tokens + `useMotion()`, type-checked against Reanimated 4.7). `scaffold.mjs --motion` writes it (action `motion-tokens`).
 - `device.mjs record` / `devices.record()`: screen recordings on Android (`screenrecord`) and iOS (`simctl io recordVideo`).
+- Plugin evals in `evals/`: 19 skill-triggering cases (3 per model-invoked skill, each also asserting that the most confusable sibling skill doesn't fire, plus one out-of-scope request).
+- CI (`.github/workflows/ci.yml`): `node --test` on Ubuntu and macOS with Node 20 and 22, and `claude plugin validate --strict` through `npx` (works without credentials). `evals.yml` runs the evals on demand when an `ANTHROPIC_API_KEY` secret is set.
+- Tests that every `${CLAUDE_PLUGIN_ROOT}/…` path and relative Markdown link resolves.
+- README.
 - `external-skills.json`: verified manifest of 12 third-party externals (Phase 1). Changes from the seed:
   - `vercel-rn`: skill is `vercel-react-native-skills`.
   - `platform-design`: skills are `ios-design-guidelines` and `android-design-guidelines`.
@@ -39,3 +47,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 - The example component test imports `expect`, `jest` and `test` from `@jest/globals`, so it type-checks under TypeScript 6 (whose `types` default no longer loads `@types/jest`). `@types/jest` is no longer suggested.
 - `matrix.mjs` now uses `scripts/lib/devices.mjs`. CLI and behaviour are unchanged: on the same config, the old and new script issue identical adb/simctl calls and produce identical output, manifest and report.
+
+[Unreleased]: https://github.com/kavazvah/mobile-kit/compare/mobile-kit--v0.1.0...HEAD
+[0.1.0]: https://github.com/kavazvah/mobile-kit/releases/tag/mobile-kit--v0.1.0

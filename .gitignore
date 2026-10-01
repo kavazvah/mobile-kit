@@ -5,3 +5,4 @@ qa-shots/
 coverage/
 .tmp/
 .claude/settings.local.json
+evals/results/
