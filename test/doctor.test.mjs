@@ -86,3 +86,14 @@ test('CLI --json and exit code', () => {
   assert.equal(r.json.ok, false);
   assert.match(runScript('doctor.mjs', ['--help']).stdout, /Usage: node doctor.mjs/);
 });
+
+test('validateMatrixConfig: locale param and app-locale settle warning', () => {
+  const cfg = example();
+  cfg.locales = { list: ['en', 'de'], strategy: 'android-app-locale', param: 'bad param' };
+  const v = validateMatrixConfig(cfg);
+  assert.match(v.errors.join('\n'), /locales.param/);
+  assert.match(v.warnings.join('\n'), /settleMs to 3000/);
+  cfg.settleMs = 3000;
+  delete cfg.locales.param;
+  assert.deepEqual(validateMatrixConfig(cfg), { errors: [], warnings: [] });
+});

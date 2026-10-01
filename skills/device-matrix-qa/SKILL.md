@@ -1,6 +1,6 @@
 ---
 name: device-matrix-qa
-description: Check an Expo / React Native app's layout on many Android screen sizes and iOS simulators, and enforce mobile layout standards (safe areas, insets, padding/spacing tokens, touch targets, font scaling, edge-to-edge). Use when building or reviewing a screen or component, when asked to "check on emulator/simulator", "test on small phones", "does this fit on all Android sizes", "fix padding/spacing", or before a release.
+description: Check an Expo / React Native app's layout on many Android screen sizes, iOS simulators and locales, and enforce mobile layout standards (safe areas, insets, padding/spacing tokens, touch targets, font scaling, edge-to-edge). Use when building or reviewing a screen or component, when asked to "test on small phones", "does this fit on all Android sizes", "check both languages", "fix padding/spacing", or before a release. For building, launching, deep links and logs on a single device use device-control.
 ---
 
 # Device Matrix QA
@@ -59,7 +59,42 @@ Then:
 4. Fix in code following `${CLAUDE_PLUGIN_ROOT}/shared/layout-rules.md`, then re-run **only** the affected screens/profiles with `--screens` / `--profiles`.
 5. Report to the user: issues found, fixed, and still open, and point them to `index.html`.
 
-**Screens behind interaction** (login, a modal, a filled form): if a deep link can't reach the state, drive it with `agent-device` (`agent-device snapshot -i`, `agent-device press @e3`, `agent-device fill @e5 "text"`), then run `node $M capture --name <screen>-<profile>` for each profile.
+**Screens behind interaction** (login, a modal, a filled form): if a deep link can't reach the state, drive it with `agent-device` (`agent-device open <package> --platform android --foreground`, `agent-device press @e3 --settle`, `agent-device fill @e5 "text" --settle`), then run `node $M capture --name <screen>-<profile>` for each profile.
+
+**Machine-readable output:** `capture --json` and `shoot --json` print one JSON summary on stdout (absolute paths of every screenshot and audit file, dp size, hint count) and send progress to stderr. Use it when handing a run to the `ui-reviewer` or `design-critic` agent.
+
+## Locales
+
+`qa/device-matrix.json` has a `locales` block:
+
+```json
+"locales": { "list": ["en", "de"], "strategy": "deeplink-param", "param": "lang" }
+```
+
+| strategy | What happens | Needs |
+|---|---|---|
+| `none` (default) | One run in the device's current language | nothing |
+| `deeplink-param` | Each screen URL gets `?lang=<tag>` (name set by `param`) | the app honours the param (snippet below) |
+| `android-app-locale` | Before each locale: `adb shell cmd locale set-app-locales <pkg> --locales <tag>`; reset afterwards | Android 13+. iOS falls back to `deeplink-param` |
+
+- With more than one locale, shots go to `qa-shots/<run>/<platform>/<profile>/<locale>/<screen>.png` and the report shows `profile · locale` per column. Limit a run with `--locales de`.
+- `android-app-locale` restarts the app on every switch, so set `settleMs` to at least 3000 or the first shot catches the splash screen.
+- Root layout snippet for `deeplink-param` (expo-router + i18next). Release builds used for iOS runs need `EXPO_PUBLIC_QA_LOCALE_PARAM=1` at build time:
+
+```tsx
+import { useGlobalSearchParams } from 'expo-router';
+import { useEffect } from 'react';
+import i18n from '../i18n'; // your i18next instance
+
+const enabled = __DEV__ || process.env.EXPO_PUBLIC_QA_LOCALE_PARAM === '1';
+export function useQaLocaleParam() {
+  const { lang } = useGlobalSearchParams<{ lang?: string }>();
+  useEffect(() => {
+    if (enabled && typeof lang === 'string' && lang !== i18n.language) void i18n.changeLanguage(lang);
+  }, [lang]);
+}
+// In app/_layout.tsx: call useQaLocaleParam() inside the root layout component.
+```
 
 **Builds:** for Android, a dev build is fine for the whole matrix (the app stays running; screens open via deep links). For iOS, each profile is a separate simulator, so the app is installed and launched fresh on each one. A dev-client build would stop at the launcher, so use a Release build: `npx expo run:ios --configuration Release`, then set `ios.appPath` to the built `.app` (find it with `find ios/build -name "*.app" -path "*Release-iphonesimulator*"`). The same applies to Android if `"relaunch": true` is set: use `npx expo run:android --variant release`.
 
@@ -68,6 +103,6 @@ Then:
 - Always leave devices clean: `android-reset` after quick checks (`shoot` resets by itself). Never leave a `wm size` override behind.
 - Fix causes, not devices. No `if (width === 360)` hacks and no per-device magic numbers. Use flex, spacing tokens, insets, `useWindowDimensions` breakpoints and `flexShrink` on text.
 - Use `Platform.select` / `.android.tsx` / `.ios.tsx` only for real platform-convention differences (back behaviour, ripple, header style), not to patch spacing.
-- If the app is bilingual, run the matrix in both languages. Longer translations are the most common cause of broken rows and buttons.
+- If the app has more than one language, run the matrix in all of them (see Locales). Longer translations are the most common cause of broken rows and buttons.
 - Keep the screen list in `qa/device-matrix.json` up to date when adding routes, so a matrix run always covers the whole app.
 - iOS requires macOS with Xcode. On other systems, run the Android part and say that iOS was skipped.

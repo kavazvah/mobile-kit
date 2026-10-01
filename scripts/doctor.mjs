@@ -62,6 +62,9 @@ export function validateMatrixConfig(cfg) {
   if (cfg.locales) {
     if (!Array.isArray(cfg.locales.list) || !cfg.locales.list.length) errors.push('locales.list is empty');
     if (!LOCALE_STRATEGIES.includes(cfg.locales.strategy ?? 'none')) errors.push(`locales.strategy must be one of ${LOCALE_STRATEGIES.join(', ')}`);
+    if (cfg.locales.param != null && !/^[\w-]+$/.test(cfg.locales.param)) errors.push('locales.param must be a simple query parameter name');
+    if (cfg.locales.strategy === 'android-app-locale' && (cfg.settleMs ?? 2500) < 3000)
+      warnings.push('android-app-locale restarts the app on each switch; set settleMs to 3000 or more');
   }
   return { errors, warnings };
 }

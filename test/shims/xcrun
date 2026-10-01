@@ -1,0 +1,24 @@
+#!/bin/sh
+# Fake xcrun (simctl only) for tests. Logs every call to $MK_SHIM_STATE/calls.log.
+S="${MK_SHIM_STATE:-/tmp/mk-shim}"
+mkdir -p "$S"
+echo "xcrun $*" >> "$S/calls.log"
+[ "$1" = "simctl" ] || exit 0
+shift
+case "$1 $2 $3" in
+  "list devices -j")
+    echo '{"devices":{"com.apple.CoreSimulator.SimRuntime.iOS-26-0":[{"name":"QA base","udid":"UDID-BASE","state":"Shutdown","isAvailable":true},{"name":"iPhone 17","udid":"UDID-BOOTED","state":"Booted","isAvailable":true}]}}' ;;
+  "list devicetypes -j")
+    echo '{"devicetypes":[{"name":"iPhone SE (3rd generation)","identifier":"com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation"},{"name":"iPhone 17","identifier":"com.apple.CoreSimulator.SimDeviceType.iPhone-17"},{"name":"iPhone 17 Pro Max","identifier":"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max"}]}' ;;
+  "list runtimes -j")
+    echo '{"runtimes":[{"identifier":"com.apple.CoreSimulator.SimRuntime.iOS-18-0","version":"18.0","platform":"iOS","isAvailable":true},{"identifier":"com.apple.CoreSimulator.SimRuntime.iOS-26-0","version":"26.0","platform":"iOS","isAvailable":true}]}' ;;
+  *)
+    case "$1" in
+      create) echo "UDID-$(printf '%s' "$2" | tr -c 'A-Za-z0-9' '-')" ;;
+      io) [ "$3" = "screenshot" ] && printf 'PNG-FAKE' > "$4" ;;
+      appinfo) printf '{\n    CFBundleExecutable = MyApp;\n}\n' ;;
+      spawn) printf 'line1 MyApp\nline2 MyApp\n' ;;
+      *) : ;;
+    esac ;;
+esac
+exit "${MK_SHIM_XCRUN_EXIT:-0}"
