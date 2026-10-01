@@ -1,0 +1,198 @@
+{
+  "$schemaVersion": 1,
+  "externals": [
+    {
+      "id": "expo-official",
+      "module": "core",
+      "type": "plugin",
+      "source": "expo/skills",
+      "skills": null,
+      "plugin": "expo@claude-plugins-official",
+      "marketplace": "anthropics/claude-plugins-official",
+      "purpose": "Official Expo skills: Expo Router, native UI, data fetching, animation, EAS build/update/submit, SDK upgrades",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Listed in claude-plugins-official as 'expo' (git-subdir expo/skills, path plugins/expo). The official marketplace is only auto-registered after a first interactive session, so install-externals adds it first (anthropics/claude-plugins-official)."
+      }
+    },
+    {
+      "id": "vercel-rn",
+      "module": "core",
+      "type": "skills-cli",
+      "source": "vercel-labs/agent-skills",
+      "skills": ["vercel-react-native-skills"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "React Native performance rules (lists, animations on GPU properties, state)",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Renamed from seed 'react-native-skills': the skill name is 'vercel-react-native-skills' (repo folder skills/react-native-skills). No LICENSE file; MIT per README and SKILL.md frontmatter."
+      }
+    },
+    {
+      "id": "agent-device",
+      "module": "devices",
+      "type": "skills-cli",
+      "source": "callstack/agent-device",
+      "skills": ["agent-device", "dogfood", "android-emulator", "ios-simulator"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "Device automation CLI for agents (snapshots, press/fill, screenshots, React DevTools), exploratory QA, emulator/simulator helpers",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Repo has 4 skills; android-emulator and ios-simulator added on maintainer request (they overlap with device-control, whose description must name them). No 'react-devtools' skill. Needs the CLI: npm i -g agent-device@latest."
+      }
+    },
+    {
+      "id": "callstack-github-actions",
+      "module": "testing",
+      "type": "skills-cli",
+      "source": "callstackincubator/agent-skills",
+      "skills": ["github-actions"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "CI workflows producing simulator/emulator build artifacts",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Seed plugin 'github-actions@callstack-agent-skills' does not exist (the marketplace only has 3 bundles). Switched to skills-cli for this one skill."
+      }
+    },
+    {
+      "id": "callstack-rn-testing",
+      "module": "testing",
+      "type": "skills-cli",
+      "source": "callstack/react-native-testing-library",
+      "skills": ["react-native-testing"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "React Native Testing Library guidance (queries, user events, async patterns)",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Located via callstackincubator/agent-skills plugins/vendored/skills-lock.json; upstream is the RNTL repo. New source, approved by the maintainer."
+      }
+    },
+    {
+      "id": "platform-design",
+      "module": "ui-ux",
+      "type": "skills-cli",
+      "source": "ehmo/platform-design-skills",
+      "skills": ["ios-design-guidelines", "android-design-guidelines"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "Apple HIG + Material Design 3 + WCAG rules",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Renamed from seed 'ios'/'android'; the specific names remove the collision risk. Repo also has web/macOS/tvOS/watchOS/visionOS/iPadOS skills (not installed)."
+      }
+    },
+    {
+      "id": "rubenglez-mobile-design",
+      "module": "design",
+      "type": "skills-cli",
+      "source": "RubenGlez/mobile-design",
+      "skills": ["mobile-design"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "Mobile product design process for React Native/Expo (navigation, forms, typography, touch, safe areas)",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Single root skill. Its description is broad (also claims animations, haptics, UX critique); keep it in the opt-in design module."
+      }
+    },
+    {
+      "id": "swm-rn-best-practices",
+      "module": "motion",
+      "type": "skills-cli",
+      "source": "software-mansion-labs/skills",
+      "skills": ["react-native-best-practices"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "Reanimated 4, Gesture Handler, Skia, layout animations, worklets (by the library authors)",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "No LICENSE file; MIT per README and SKILL.md frontmatter. Folder name equals Callstack's skill, which is why callstack-rn-best-practices installs as a plugin (SPEC 6.4)."
+      }
+    },
+    {
+      "id": "emil-animate-expo",
+      "module": "motion",
+      "type": "skills-cli",
+      "source": "emilkowalski/skills",
+      "skills": ["animate-expo"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "When/how to animate on mobile: UI thread, gestures, interruptibility, release-build judgement",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": ""
+      }
+    },
+    {
+      "id": "callstack-rn-best-practices",
+      "module": "perf",
+      "type": "plugin",
+      "source": "callstackincubator/agent-skills",
+      "skills": null,
+      "plugin": "building-react-native-apps@callstack-agent-skills",
+      "marketplace": "callstackincubator/agent-skills",
+      "purpose": "Performance optimization + profiling (Ultimate Guide to RN Optimization)",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "Seed plugin 'react-native-best-practices@callstack-agent-skills' does not exist. The skill ships in the 'building-react-native-apps' bundle, which also brings create-react-native-library, react-native-tv-best-practices, react-navigation and upgrading-react-native. Namespaced, so no clash with swm-rn-best-practices."
+      }
+    },
+    {
+      "id": "reanimated-skia-performance",
+      "module": "motion-skia",
+      "type": "skills-cli",
+      "source": "andreev-danila/skills",
+      "skills": ["reanimated-skia-performance"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "Reanimated + Skia performance (UI-thread state, minimal JS-UI crossings)",
+      "license": null,
+      "licenseWarning": "The source repository declares no license. Install it only if you accept that.",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "No license anywhere (no LICENSE file, README or frontmatter). Kept on maintainer request; init must show licenseWarning before installing."
+      }
+    },
+    {
+      "id": "swm-pulsar-haptics",
+      "module": "haptics",
+      "type": "skills-cli",
+      "source": "software-mansion-labs/skills",
+      "skills": ["pulsar-haptics"],
+      "plugin": null,
+      "marketplace": null,
+      "purpose": "Haptics with Software Mansion's Pulsar SDK",
+      "license": "MIT",
+      "verified": {
+        "date": "2026-10-01",
+        "by": "phase1",
+        "notes": "MIT per repo README (no LICENSE file, no license in frontmatter)."
+      }
+    }
+  ]
+}
